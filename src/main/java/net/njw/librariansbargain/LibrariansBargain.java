@@ -12,7 +12,7 @@ import org.slf4j.Logger;
 
 @Mod(LibrariansBargain.MODID)
 public class LibrariansBargain {
-    public static final String MODID = "njw_librarians_bargain";
+    public static final String MODID = "njw_librarian_negotiations";
     public static final Logger LOGGER = LogUtils.getLogger();
 
     public LibrariansBargain(IEventBus modEventBus, ModContainer modContainer) {
