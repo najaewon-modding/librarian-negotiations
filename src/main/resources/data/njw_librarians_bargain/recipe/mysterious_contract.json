@@ -2,9 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "minecraft:book",
+    "minecraft:writable_book",
     "minecraft:emerald",
-    "minecraft:feather"
+    "minecraft:blaze_rod"
   ],
   "result": {
     "id": "njw_librarians_bargain:mysterious_contract",

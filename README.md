@@ -18,7 +18,13 @@ Instead of repeatedly breaking and replacing lecterns, players can use a **Myste
 * Choose from multiple randomly generated offers.
 * Close the bargaining screen without accepting an offer to keep the librarian's current trade.
 
-Future bargaining options may allow players to renegotiate specific parts of an offer, such as the enchantment level or price.
+## Mysterious Contract Recipe
+
+Craft one **Mysterious Contract** shapelessly with:
+
+* 1 Book and Quill
+* 1 Emerald
+* 1 Blaze Rod
 
 ## Concept
 
