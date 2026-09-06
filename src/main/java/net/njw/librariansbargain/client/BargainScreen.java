@@ -1,10 +1,8 @@
 package net.njw.librariansbargain.client;
 
-import java.time.Duration;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -38,7 +36,6 @@ public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
                 .bounds(leftPos + 8, topPos + 61, 104, 20).build();
         bargainButton = Button.builder(Component.empty(), button -> sendMenuButton(0))
                 .bounds(leftPos + 8, topPos + 157, 104, 20).build();
-        bargainButton.setTooltipDelay(Duration.ZERO);
         addRenderableWidget(enchantmentLockButton);
         addRenderableWidget(levelLockButton);
         addRenderableWidget(bargainButton);
@@ -48,7 +45,6 @@ public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
             int y = topPos + 97 + i * 32;
             proposalButtons[i] = Button.builder(Component.empty(), button -> sendMenuButton(index + 1))
                     .bounds(leftPos + RIGHT_X, y, RIGHT_WIDTH, 28).build();
-            proposalButtons[i].setTooltipDelay(Duration.ZERO);
             addRenderableWidget(proposalButtons[i]);
         }
 
@@ -91,24 +87,12 @@ public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
                 ? "menu.njw_librarians_bargain.rebargain"
                 : "menu.njw_librarians_bargain.bargain_action"));
         bargainButton.active = true;
-        bargainButton.setTooltip(null);
 
         boolean enoughDiamonds = menu.hasEnoughDiamondsForFinalDecision();
-        int finalCost = menu.getFinalDecisionDiamondCost();
 
         for (int i = 0; i < proposalButtons.length; i++) {
             boolean ready = proposalsReady && !menu.getProposalBook(i).isEmpty();
             proposalButtons[i].active = ready && enoughDiamonds;
-            if (!ready) {
-                proposalButtons[i].setTooltip(null);
-                continue;
-            }
-
-            Component tooltip = enoughDiamonds
-                    ? Component.translatable("menu.njw_librarians_bargain.accept_cost", finalCost)
-                    : Component.translatable("message.njw_librarians_bargain.accept_cost_missing", finalCost)
-                            .withStyle(ChatFormatting.RED);
-            proposalButtons[i].setTooltip(Tooltip.create(tooltip));
         }
     }
 
@@ -217,6 +201,30 @@ public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
             if (book.isEmpty()) continue;
             int y = 97 + i * 32;
             drawProposalTrade(graphics, book, menu.getProposalPrice(i), RIGHT_X, y);
+        }
+    }
+
+    @Override
+    protected void extractTooltip(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        super.extractTooltip(graphics, mouseX, mouseY);
+        if (!menu.areProposalsReady()) return;
+
+        int x = leftPos + RIGHT_X;
+        boolean enoughDiamonds = menu.hasEnoughDiamondsForFinalDecision();
+        int finalCost = menu.getFinalDecisionDiamondCost();
+
+        for (int i = 0; i < proposalButtons.length; i++) {
+            if (menu.getProposalBook(i).isEmpty()) continue;
+
+            int y = topPos + 97 + i * 32;
+            if (mouseX < x || mouseX >= x + RIGHT_WIDTH || mouseY < y || mouseY >= y + 28) continue;
+
+            Component tooltip = enoughDiamonds
+                    ? Component.translatable("menu.njw_librarians_bargain.accept_cost", finalCost)
+                    : Component.translatable("message.njw_librarians_bargain.accept_cost_missing", finalCost)
+                            .withStyle(ChatFormatting.RED);
+            graphics.setTooltipForNextFrame(font, tooltip, mouseX, mouseY);
+            return;
         }
     }
 }

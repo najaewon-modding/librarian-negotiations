@@ -3,6 +3,8 @@ package net.njw.librariansbargain.menu;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.npc.villager.Villager;
@@ -150,6 +152,9 @@ public class BargainMenu extends AbstractContainerMenu {
 
         clearProposals();
         broadcastChanges();
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.closeContainer();
+        }
         return true;
     }
 
@@ -210,10 +215,14 @@ public class BargainMenu extends AbstractContainerMenu {
         data.set(REJECTION_COUNT, rejectionCount);
         broadcastChanges();
 
+        player.level().playSound(null, villager.getX(), villager.getY(), villager.getZ(),
+                SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 0.9F);
+
+        ServerPlayer serverPlayer = player instanceof ServerPlayer sp ? sp : null;
         if (rejectionCount >= MAX_REJECTIONS) {
             player.sendOverlayMessage(Component.translatable(
                     "message.njw_librarians_bargain.bargain_ended"));
-            if (player instanceof ServerPlayer serverPlayer) {
+            if (serverPlayer != null) {
                 serverPlayer.closeContainer();
             }
         } else {
