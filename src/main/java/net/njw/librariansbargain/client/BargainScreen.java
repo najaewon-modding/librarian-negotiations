@@ -17,6 +17,9 @@ import net.njw.librariansbargain.menu.BargainMenu;
 public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
     private static final int RIGHT_X = 132;
     private static final int RIGHT_WIDTH = 240;
+    private static final int REJECTION_MARK_START_X = 12;
+    private static final int REJECTION_MARK_Y = 136;
+    private static final int REJECTION_MARK_SPACING = 18;
     private Button enchantmentLockButton;
     private Button levelLockButton;
     private Button bargainButton;
@@ -45,6 +48,7 @@ public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
             int y = topPos + 97 + i * 32;
             proposalButtons[i] = Button.builder(Component.empty(), button -> sendMenuButton(index + 1))
                     .bounds(leftPos + RIGHT_X, y, RIGHT_WIDTH, 28).build();
+            proposalButtons[i].setTooltipDelay(Duration.ZERO);
             addRenderableWidget(proposalButtons[i]);
         }
 
@@ -86,15 +90,25 @@ public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
         bargainButton.setMessage(Component.translatable(proposalsReady
                 ? "menu.njw_librarians_bargain.rebargain"
                 : "menu.njw_librarians_bargain.bargain_action"));
+        bargainButton.active = true;
+        bargainButton.setTooltip(null);
 
-        boolean enoughDiamonds = menu.hasEnoughDiamonds();
-        bargainButton.active = enoughDiamonds;
-        bargainButton.setTooltip(enoughDiamonds ? null : Tooltip.create(Component.translatable(
-                "message.njw_librarians_bargain.not_enough_diamonds").withStyle(ChatFormatting.RED)));
+        boolean enoughDiamonds = menu.hasEnoughDiamondsForFinalDecision();
+        int finalCost = menu.getFinalDecisionDiamondCost();
 
         for (int i = 0; i < proposalButtons.length; i++) {
             boolean ready = proposalsReady && !menu.getProposalBook(i).isEmpty();
-            proposalButtons[i].active = ready;
+            proposalButtons[i].active = ready && enoughDiamonds;
+            if (!ready) {
+                proposalButtons[i].setTooltip(null);
+                continue;
+            }
+
+            Component tooltip = enoughDiamonds
+                    ? Component.translatable("menu.njw_librarians_bargain.accept_cost", finalCost)
+                    : Component.translatable("message.njw_librarians_bargain.accept_cost_missing", finalCost)
+                            .withStyle(ChatFormatting.RED);
+            proposalButtons[i].setTooltip(Tooltip.create(tooltip));
         }
     }
 
@@ -104,7 +118,6 @@ public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
         drawMainBackground(graphics);
         drawDivider(graphics);
         drawCurrentOffer(graphics);
-        drawDiamondCost(graphics);
     }
 
     private void drawMainBackground(GuiGraphicsExtractor graphics) {
@@ -175,21 +188,23 @@ public class BargainScreen extends AbstractContainerScreen<BargainMenu> {
         graphics.text(font, enchantment, x + 102, textY, 0xFFFFFFFF, true);
     }
 
-    private void drawDiamondCost(GuiGraphicsExtractor graphics) {
-        ItemStack diamond = new ItemStack(Items.DIAMOND);
-        graphics.item(diamond, leftPos + 10, topPos + 132);
-        graphics.text(font,
-                Component.translatable("menu.njw_librarians_bargain.diamond_cost_value",
-                        menu.getDiamondCost()),
-                leftPos + 32, topPos + 136, 0xFF404040, false);
+    private void drawRejectionMarks(GuiGraphicsExtractor graphics) {
+        int rejected = menu.getRejectionCount();
+        for (int i = 0; i < BargainMenu.MAX_REJECTIONS; i++) {
+            int color = i < rejected ? 0xFFFF5555 : 0xFF777777;
+            graphics.text(font, "X", REJECTION_MARK_START_X + i * REJECTION_MARK_SPACING,
+                    REJECTION_MARK_Y, color, false);
+        }
     }
 
     @Override
     protected void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         graphics.text(font, title, 8, 8, 0xFF404040, false);
         graphics.text(font,
-                Component.translatable("menu.njw_librarians_bargain.bargain_cost"),
+                Component.translatable("menu.njw_librarians_bargain.rejection_chance",
+                        menu.getRejectionChancePercent()),
                 8, 116, 0xFF404040, false);
+        drawRejectionMarks(graphics);
         graphics.text(font,
                 Component.translatable("menu.njw_librarians_bargain.current_offer"),
                 RIGHT_X, 27, 0xFF404040, false);

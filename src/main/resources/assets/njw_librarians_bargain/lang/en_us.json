@@ -5,6 +5,9 @@
   "message.njw_librarians_bargain.no_enchanted_book": "The librarian must offer an enchanted book to bargain.",
   "message.njw_librarians_bargain.no_diamonds": "You need %s Diamonds to bargain.",
   "message.njw_librarians_bargain.not_enough_diamonds": "Not enough Diamonds.",
+  "message.njw_librarians_bargain.accept_cost_missing": "You need %s Diamonds to accept an offer.",
+  "message.njw_librarians_bargain.bargain_rejected": "The librarian rejected the bargain. (%s/%s)",
+  "message.njw_librarians_bargain.bargain_ended": "The librarian refuses to bargain any further.",
   "menu.njw_librarians_bargain.bargain": "Bargain with Librarian",
   "menu.njw_librarians_bargain.current_offer": "Current Offer",
   "menu.njw_librarians_bargain.new_offers": "New Offers",
@@ -12,8 +15,8 @@
   "menu.njw_librarians_bargain.enchantment_locked": "Enchantment: Locked",
   "menu.njw_librarians_bargain.level_lock": "Level: Lock",
   "menu.njw_librarians_bargain.level_locked": "Level: Locked",
-  "menu.njw_librarians_bargain.bargain_cost": "Bargain Cost",
-  "menu.njw_librarians_bargain.diamond_cost_value": "%s Diamonds",
+  "menu.njw_librarians_bargain.rejection_chance": "Rejection Chance: %s%%",
+  "menu.njw_librarians_bargain.accept_cost": "Accept offer: %s Diamonds",
   "menu.njw_librarians_bargain.bargain_action": "Bargain",
   "menu.njw_librarians_bargain.rebargain": "Bargain Again"
 }

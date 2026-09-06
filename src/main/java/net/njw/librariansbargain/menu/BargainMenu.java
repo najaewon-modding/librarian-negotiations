@@ -1,5 +1,6 @@
 package net.njw.librariansbargain.menu;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -18,13 +19,16 @@ import net.njw.librariansbargain.bargain.BargainService;
 
 public class BargainMenu extends AbstractContainerMenu {
     private static final int DISPLAY_SLOT_COUNT = 4;
-    private static final int DATA_COUNT = 9;
+    private static final int DATA_COUNT = 10;
     private static final int CURRENT_PRICE = 0;
     private static final int READY = 4;
     private static final int SELECTED = 5;
     private static final int LOCK_ENCHANTMENT = 6;
     private static final int LOCK_LEVEL = 7;
     private static final int DIAMOND_COUNT = 8;
+    private static final int REJECTION_COUNT = 9;
+    private static final int FINAL_DECISION_DIAMOND_COST = 7;
+    public static final int MAX_REJECTIONS = 3;
     private final Inventory inventory;
     private final Villager villager;
     private final Container displayItems;
@@ -88,30 +92,38 @@ public class BargainMenu extends AbstractContainerMenu {
         return data.get(LOCK_LEVEL) == 1;
     }
 
-    public int getDiamondCost() {
-        if (!areProposalsReady()) return 1;
-        return 1 + (isEnchantmentLocked() ? 1 : 0) + (isLevelLocked() ? 1 : 0);
+    public int getFinalDecisionDiamondCost() {
+        return FINAL_DECISION_DIAMOND_COST;
     }
 
     public int getDiamondCount() {
         return data.get(DIAMOND_COUNT);
     }
 
-    public boolean hasEnoughDiamonds() {
-        return getDiamondCount() >= getDiamondCost();
+    public boolean hasEnoughDiamondsForFinalDecision() {
+        return getDiamondCount() >= FINAL_DECISION_DIAMOND_COST;
+    }
+
+    public int getRejectionCount() {
+        return data.get(REJECTION_COUNT);
+    }
+
+    public int getRejectionChancePercent() {
+        int locks = (isEnchantmentLocked() ? 1 : 0) + (isLevelLocked() ? 1 : 0);
+        return 5 + locks * 10;
     }
 
     @Override
     public boolean clickMenuButton(Player player, int buttonId) {
         if (villager == null) return false;
         if (buttonId == 0) return generateProposals(player);
-        if (buttonId >= 1 && buttonId <= 3) return applyProposal(buttonId - 1);
+        if (buttonId >= 1 && buttonId <= 3) return applyProposal(player, buttonId - 1);
         if (buttonId == 4) return toggleEnchantmentLock();
         if (buttonId == 5) return toggleLevelLock();
         return false;
     }
 
-    private boolean applyProposal(int index) {
+    private boolean applyProposal(Player player, int index) {
         if (!areProposalsReady() || index < 0 || index >= proposals.length) return false;
 
         MerchantOffer proposal = proposals[index];
@@ -126,6 +138,11 @@ public class BargainMenu extends AbstractContainerMenu {
 
         int currentOfferIndex = villager.getOffers().indexOf(currentOffer);
         if (currentOfferIndex < 0) return false;
+
+        if (!takeDiamonds(player, FINAL_DECISION_DIAMOND_COST)) {
+            broadcastChanges();
+            return false;
+        }
 
         villager.getOffers().set(currentOfferIndex, proposal);
         displayItems.setItem(0, proposal.getResult().copy());
@@ -165,32 +182,47 @@ public class BargainMenu extends AbstractContainerMenu {
             return false;
         }
 
-        boolean rerolling = areProposalsReady();
-        BargainService.EnchantmentData[] previous =
-                new BargainService.EnchantmentData[proposals.length];
+        if (rejectBargain(player)) return true;
 
-        if (rerolling) {
-            for (int i = 0; i < proposals.length; i++) {
-                MerchantOffer proposal = proposals[i];
-                if (proposal == null) return false;
-
-                previous[i] = BargainService.getEnchantmentData(proposal.getResult());
-                if (previous[i] == null) return false;
-            }
-        }
-
-        int diamondCost = getDiamondCost();
-
-        if (!takeDiamonds(player, diamondCost)) {
-            broadcastChanges();
-            return false;
-        }
-
-        if (!rerolling) {
+        if (!areProposalsReady()) {
             return generateInitialProposals(level, player);
         }
 
+        BargainService.EnchantmentData[] previous =
+                new BargainService.EnchantmentData[proposals.length];
+
+        for (int i = 0; i < proposals.length; i++) {
+            MerchantOffer proposal = proposals[i];
+            if (proposal == null) return false;
+
+            previous[i] = BargainService.getEnchantmentData(proposal.getResult());
+            if (previous[i] == null) return false;
+        }
+
         generateRerolledProposals(level, player, previous);
+        return true;
+    }
+
+    private boolean rejectBargain(Player player) {
+        if (player.getRandom().nextInt(100) >= getRejectionChancePercent()) return false;
+
+        int rejectionCount = Math.min(MAX_REJECTIONS, getRejectionCount() + 1);
+        data.set(REJECTION_COUNT, rejectionCount);
+        broadcastChanges();
+
+        if (rejectionCount >= MAX_REJECTIONS) {
+            player.sendOverlayMessage(Component.translatable(
+                    "message.njw_librarians_bargain.bargain_ended"));
+            if (player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.closeContainer();
+            }
+        } else {
+            player.sendOverlayMessage(Component.translatable(
+                    "message.njw_librarians_bargain.bargain_rejected",
+                    rejectionCount,
+                    MAX_REJECTIONS));
+        }
+
         return true;
     }
 

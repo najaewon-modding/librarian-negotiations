@@ -7,19 +7,26 @@ Instead of repeatedly breaking and replacing lecterns, players can use a **Myste
 ## Features
 
 * Use a **Mysterious Contract** on a librarian to open the bargaining screen.
-* Spend **Diamonds** to receive new enchanted book trade offers.
+* Generate and reroll enchanted book offers without spending Diamonds.
+* Each bargain attempt can be rejected by the librarian.
+  * 5% rejection chance with no locks.
+  * 15% rejection chance with one lock.
+  * 25% rejection chance with two locks.
+* After three rejected bargain attempts, the bargaining screen is forcibly closed.
+* Rejected attempts leave the current proposal list unchanged.
+* Spend **7 Diamonds only when accepting the final offer**.
 * Choose from multiple randomly generated offers.
-* Accept the offer you want and apply it to the librarian.
 * Close the bargaining screen without accepting an offer to keep the librarian's current trade.
 
 Future bargaining options may allow players to renegotiate specific parts of an offer, such as the enchantment level or price.
 
 ## Concept
 
-The Mysterious Contract acts as the tool used to negotiate, while Diamonds are consumed as the bargaining cost.
+The Mysterious Contract acts as the tool used to negotiate. Rerolling is free, but locking proposal properties increases the chance that the librarian rejects the bargain. Diamonds are paid only when the player accepts a final offer.
 
 > **Contract = Access to bargaining**
-> **Diamond = Cost of bargaining**
+> **Locks = Higher rejection risk**
+> **7 Diamonds = Final acceptance cost**
 
 ## Status
 

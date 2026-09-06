@@ -5,6 +5,9 @@
   "message.njw_librarians_bargain.no_enchanted_book": "흥정하려면 사서의 거래 목록에 마법이 부여된 책이 있어야 합니다.",
   "message.njw_librarians_bargain.no_diamonds": "흥정하려면 다이아몬드가 %s개 필요합니다.",
   "message.njw_librarians_bargain.not_enough_diamonds": "다이아몬드가 부족합니다.",
+  "message.njw_librarians_bargain.accept_cost_missing": "제안을 확정하려면 다이아몬드가 %s개 필요합니다.",
+  "message.njw_librarians_bargain.bargain_rejected": "사서가 흥정을 거절했습니다. (%s/%s)",
+  "message.njw_librarians_bargain.bargain_ended": "사서가 더 이상 흥정하려 하지 않습니다.",
   "menu.njw_librarians_bargain.bargain": "사서와 흥정",
   "menu.njw_librarians_bargain.current_offer": "현재 거래",
   "menu.njw_librarians_bargain.new_offers": "새로운 제안",
@@ -12,8 +15,8 @@
   "menu.njw_librarians_bargain.enchantment_locked": "마법부여: 고정됨",
   "menu.njw_librarians_bargain.level_lock": "레벨: 고정하기",
   "menu.njw_librarians_bargain.level_locked": "레벨: 고정됨",
-  "menu.njw_librarians_bargain.bargain_cost": "흥정 비용",
-  "menu.njw_librarians_bargain.diamond_cost_value": "다이아몬드 %s개",
+  "menu.njw_librarians_bargain.rejection_chance": "거절 확률: %s%%",
+  "menu.njw_librarians_bargain.accept_cost": "제안 확정: 다이아몬드 %s개",
   "menu.njw_librarians_bargain.bargain_action": "흥정하기",
   "menu.njw_librarians_bargain.rebargain": "다시 흥정하기"
 }
