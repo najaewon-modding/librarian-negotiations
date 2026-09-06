@@ -216,7 +216,7 @@ public class BargainMenu extends AbstractContainerMenu {
         broadcastChanges();
 
         player.level().playSound(null, villager.getX(), villager.getY(), villager.getZ(),
-                SoundEvents.VILLAGER_NO, SoundSource.NEUTRAL, 1.0F, 0.9F);
+                SoundEvents.ANVIL_LAND, SoundSource.NEUTRAL, 0.5F, 1.8F);
 
         ServerPlayer serverPlayer = player instanceof ServerPlayer sp ? sp : null;
         if (rejectionCount >= MAX_REJECTIONS) {
