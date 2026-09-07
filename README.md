@@ -51,8 +51,11 @@ Rerolling itself is free. The player pays through risk while negotiating and spe
 ## Technical
 
 * Mod ID: `njw_librarian_negotiations`
-* License: MIT
 
 ### Updating from Librarian's Bargain
 
 The mod ID changed from `njw_librarians_bargain` to `njw_librarian_negotiations`. Existing Mysterious Contract item stacks from older versions use the previous registry ID and are not migrated automatically.
+
+## License
+
+MIT
