@@ -1,61 +1,104 @@
 # Librarian Negotiations
 
-**Librarian Negotiations** is a Minecraft mod for negotiating librarian enchanted-book trades without repeatedly breaking and replacing lecterns.
+아직 거래하지 않은 사서 주민의 마법부여 책 거래를 **협상**을 통해 다시 제안받고 확정할 수 있게 하는 NeoForge 모드입니다.
 
-Use a **Mysterious Contract** on an eligible librarian to open a negotiation, compare several proposals, lock parts of an offer, reroll proposals, and decide whether to accept a final deal.
+강의대를 반복해서 부수고 다시 설치하는 대신, `Mysterious Contract`를 사용해 여러 거래 제안을 비교하고 원하는 조건을 잠근 채 다시 협상할 수 있습니다.
 
-## Features
+## 지원 환경
 
-* Use a **Mysterious Contract** on an untraded librarian that currently offers an enchanted book.
-* The contract is consumed when a valid negotiation is opened and has a maximum stack size of 1.
-* The current librarian trade appears as the first proposal when negotiation begins.
-* Generate and reroll proposals without spending Diamonds.
-* Lock the enchantment when negotiating again.
-* Lock the level after locking the enchantment.
-* Locks increase the chance that the librarian rejects a negotiation attempt:
-  * **5%** with no locks.
-  * **15%** with one lock.
-  * **25%** with two locks.
-* A rejected attempt leaves the current proposal list unchanged.
-* After **3 rejected attempts**, the negotiation screen is forcibly closed.
-* Rejections use a short, high-pitched anvil sound for clear feedback.
-* Accepting a final proposal costs **7 Diamonds**.
-* The acceptance tooltip follows the mouse directly and shows the 7-Diamond cost.
-* After a proposal is accepted, the negotiation screen closes automatically.
-* Closing the screen without accepting a proposal keeps the librarian's current trade unchanged.
+| 항목 | 값 |
+| --- | --- |
+| Minecraft | `26.1.2` |
+| NeoForge | `26.1.2.97+` |
+| Java | `25` |
+
+## 주요 기능
+
+- 아직 거래하지 않은 사서 주민과 마법부여 책 거래 협상
+- 현재 거래를 포함한 3개의 제안 비교
+- 제안 다시 뽑기
+- 마법부여 종류 잠금
+- 마법부여 레벨 잠금
+- 잠금 조건이 많을수록 협상 거절 확률 증가
+- 누적 3회 거절 시 협상 종료
+- 원하는 제안을 확정할 때 다이아몬드 7개 소모
+- 확정하지 않고 화면을 닫으면 기존 거래 유지
+
+## 협상 시작
+
+다음 조건을 만족하는 사서 주민에게 **Mysterious Contract**를 사용하면 협상 화면이 열립니다.
+
+- 직업이 사서일 것
+- 아직 한 번도 거래하지 않은 주민일 것
+- 현재 거래에 마법부여 책이 포함되어 있을 것
+
+유효한 협상이 시작되면 Mysterious Contract 1개가 소모됩니다.
+
+## 거래 제안
+
+협상을 시작하면 총 3개의 제안을 비교할 수 있습니다.
+
+- 첫 번째 제안은 사서가 원래 가지고 있던 마법부여 책 거래입니다.
+- 나머지 제안은 새롭게 생성됩니다.
+- 원하는 제안이 없다면 다시 협상하여 새 제안을 받을 수 있습니다.
+
+제안을 다시 뽑는 것 자체에는 다이아몬드가 들지 않습니다.
+
+## 잠금 기능
+
+다시 협상할 때 원하는 조건을 유지할 수 있습니다.
+
+### 마법부여 잠금
+
+현재 제안의 마법부여 종류를 유지한 채 다시 제안받습니다.
+
+### 레벨 잠금
+
+마법부여 종류를 잠근 뒤에는 해당 마법부여의 레벨까지 함께 고정할 수 있습니다.
+
+단, 조건을 많이 잠글수록 주민이 협상을 거절할 확률이 높아집니다.
+
+| 잠금 상태 | 거절 확률 |
+| --- | ---: |
+| 잠금 없음 | 5% |
+| 1개 잠금 | 15% |
+| 2개 잠금 | 25% |
+
+거절된 경우 현재 제안 목록은 그대로 유지됩니다. 누적 **3회** 거절되면 협상 화면이 자동으로 닫힙니다.
+
+## 최종 거래 확정
+
+원하는 제안을 선택해 확정할 때 **다이아몬드 7개**가 필요합니다.
+
+확정하면 해당 제안이 실제 사서 주민의 마법부여 책 거래로 적용되고 협상 화면이 닫힙니다.
+
+반대로 아무 제안도 확정하지 않고 화면을 닫으면 주민의 기존 거래는 변경되지 않습니다.
 
 ## Mysterious Contract
 
-The recipe is shapeless:
+Mysterious Contract는 다음 재료를 사용한 무형 조합법으로 제작합니다.
 
-* 1 Book and Quill
-* 1 Emerald
-* 1 Blaze Rod
+- 책과 깃펜 1개
+- 에메랄드 1개
+- 블레이즈 막대 1개
 
-The recipe is unlocked after trading with a villager.
+조합법은 주민과 한 번 거래하면 해금됩니다.
 
-## Negotiation Model
+Mysterious Contract는 한 칸에 1개만 보관할 수 있습니다.
 
-> **Mysterious Contract = Access to negotiation**  
-> **Locks = Higher rejection risk**  
-> **7 Diamonds = Final acceptance cost**
+## 이전 버전에서 업데이트하는 경우
 
-Rerolling itself is free. The player pays through risk while negotiating and spends Diamonds only when committing to a final offer.
+이 모드는 이전에 `Librarian's Bargain`이라는 이름과 `njw_librarians_bargain` 모드 ID를 사용했습니다.
 
-## Compatibility
+현재 모드 ID는 `njw_librarian_negotiations`이며, 이전 버전에서 만들어진 Mysterious Contract 아이템은 자동으로 변환되지 않습니다.
 
-* Minecraft **26.1.2**
-* NeoForge **26.1.2.97+**
-* Java **25**
+## 설치
 
-## Technical
+1. Minecraft `26.1.2`와 NeoForge `26.1.2.97` 이상을 설치합니다.
+2. Librarian Negotiations JAR 파일을 `mods` 폴더에 넣습니다.
+3. 멀티플레이에서는 서버와 클라이언트 모두에 같은 버전을 설치합니다.
+4. Minecraft 또는 서버를 실행합니다.
 
-* Mod ID: `njw_librarian_negotiations`
+## 라이선스
 
-### Updating from Librarian's Bargain
-
-The mod ID changed from `njw_librarians_bargain` to `njw_librarian_negotiations`. Existing Mysterious Contract item stacks from older versions use the previous registry ID and are not migrated automatically.
-
-## License
-
-MIT
+MIT License. 자세한 내용은 [LICENSE](LICENSE)를 확인하세요.
